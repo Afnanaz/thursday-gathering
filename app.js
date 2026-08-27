@@ -569,7 +569,14 @@
   let eventsList = [];
   let eventsCurrent = 0;
   let eventsTransitioning = false;
-  const TIMELINE_NODE_W = 240;
+
+  // Read the actual rendered node width (set in CSS, and narrower under the
+  // mobile breakpoint) rather than hardcoding it, so the two never drift out
+  // of sync.
+  function timelineNodeWidth() {
+    const node = document.querySelector(".timeline-node");
+    return node ? node.getBoundingClientRect().width : 240;
+  }
 
   function eventDetailCardHTML(ev) {
     const registered = state.registeredEvents.includes(ev.id);
@@ -615,7 +622,8 @@
 
   function positionTimeline(instant) {
     const timeline = $("#eventsTimeline");
-    const offset = eventsCurrent * TIMELINE_NODE_W + TIMELINE_NODE_W / 2;
+    const nodeW = timelineNodeWidth();
+    const offset = eventsCurrent * nodeW + nodeW / 2;
     if (instant) {
       const prev = timeline.style.transition;
       timeline.style.transition = "none";
@@ -659,6 +667,7 @@
     if (!list.length) {
       $("#eventsDetail").innerHTML = "";
       $("#eventsTimeline").innerHTML = "";
+      $("#eventsVerticalList").innerHTML = "";
       $("#eventsConnector").style.display = "none";
       emptyEl.innerHTML = `
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17"/></svg>
@@ -682,6 +691,47 @@
     renderEventsDetail();
     positionTimeline(isFirstRender);
     applyEventsOrb(eventsCurrent);
+    renderEventsVerticalList();
+  }
+
+  function eventRowHTML(ev) {
+    const registered = state.registeredEvents.includes(ev.id);
+    return `
+      <div class="ev-row">
+        <div class="ev-row-rail" aria-hidden="true">
+          <span class="ev-row-dot"></span>
+          <span class="ev-row-line"></span>
+        </div>
+        <div class="ev-row-body card event-card" data-event-id="${ev.id}">
+          <span class="event-date-badge mono">${esc(fmtDateShort(ev.date, state.uiLang))} · 17:30</span>
+          <h3 class="event-title-link" data-view-event="${ev.id}" role="button" tabindex="0">${esc(trEventTitle(ev))}</h3>
+          <div class="topic-tags">${ev.tags.map((tg) => `<span class="tag">${esc(trTag(tg))}</span>`).join("")}</div>
+          <p class="desc">${esc(trEventDesc(ev))}</p>
+          <div class="row">
+            <button class="btn btn-sm ${registered ? "btn-outline" : "btn-primary"}" data-register="${ev.id}">${registered ? t("common.registered") : t("common.register")}</button>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function renderEventsVerticalList() {
+    const list = $("#eventsVerticalList");
+    list.innerHTML = eventsList.map(eventRowHTML).join("");
+    $$("#eventsVerticalList [data-register]").forEach((b) => b.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const id = b.dataset.register;
+      const i = state.registeredEvents.indexOf(id);
+      if (i === -1) { state.registeredEvents.push(id); toast(t("toast.registered")); }
+      else { state.registeredEvents.splice(i, 1); toast(t("toast.regRemoved")); }
+      save(); renderEvents();
+    }));
+    $$("#eventsVerticalList [data-view-event]").forEach((el) => {
+      const card = el.closest(".event-card") || el;
+      el.addEventListener("click", () => openEventDetail(el.dataset.viewEvent, card));
+      el.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openEventDetail(el.dataset.viewEvent, card); }
+      });
+    });
   }
 
   function bindEventCardActions() {
@@ -1593,39 +1643,51 @@
     },
   ];
 
-  function initStorySlides() {
+  // Shared by both Home layouts: point the orb/geo shapes/wash/backgrounds at
+  // whatever slide index i, wherever that index came from (a discrete pager
+  // jump on desktop, or "whichever slide the IntersectionObserver says is in
+  // view" on mobile).
+  function applyHomeDecorFor(i) {
     const storyHome = $("#storyHome");
     const geoEls = [1, 2, 3, 4, 5].map((n) => $(`#geo${n}`));
     const washEl = $("#geoWash");
     const bgEls = $$(".slide-bg-global", storyHome);
-
-    function applyGeoStops(i) {
-      const stop = GEO_STOPS[i % GEO_STOPS.length];
-      geoEls.forEach((el, idx) => {
-        const s = stop.shapes[idx];
-        if (!el || !s) return;
-        el.style.setProperty("--gx", s.x);
-        el.style.setProperty("--gy", s.y);
-        el.style.setProperty("--gs", s.scale);
-        el.style.setProperty("--gr", `${s.rot}deg`);
-        el.style.setProperty("--go", 1);
-      });
-      if (washEl && stop.wash) {
-        washEl.style.setProperty("--wx", stop.wash.x);
-        washEl.style.setProperty("--wy", stop.wash.y);
-        washEl.style.setProperty("--ws", stop.wash.scale);
-        washEl.style.setProperty("--wo", stop.wash.opacity);
-      }
-      bgEls.forEach((el) => el.classList.toggle("is-active-bg", Number(el.dataset.bgFor) === i));
+    const stop = GEO_STOPS[i % GEO_STOPS.length];
+    geoEls.forEach((el, idx) => {
+      const s = stop.shapes[idx];
+      if (!el || !s) return;
+      el.style.setProperty("--gx", s.x);
+      el.style.setProperty("--gy", s.y);
+      el.style.setProperty("--gs", s.scale);
+      el.style.setProperty("--gr", `${s.rot}deg`);
+      el.style.setProperty("--go", 1);
+    });
+    if (washEl && stop.wash) {
+      washEl.style.setProperty("--wx", stop.wash.x);
+      washEl.style.setProperty("--wy", stop.wash.y);
+      washEl.style.setProperty("--ws", stop.wash.scale);
+      washEl.style.setProperty("--wo", stop.wash.opacity);
     }
+    bgEls.forEach((el) => el.classList.toggle("is-active-bg", Number(el.dataset.bgFor) === i));
+    const orbEl = $("#storyOrb");
+    const orbStop = HOME_ORB_STOPS[i % HOME_ORB_STOPS.length];
+    if (orbEl && orbStop) {
+      orbEl.style.setProperty("--orb-x", orbStop.x);
+      orbEl.style.setProperty("--orb-y", orbStop.y);
+      orbEl.style.setProperty("--orb-scale", orbStop.scale);
+    }
+  }
 
+  function isMobileHomeLayout() { return window.matchMedia("(max-width: 767px)").matches; }
+
+  function initStorySlidesDesktop(storyHome) {
     const pager = createStoryPager({
       root: storyHome,
       axis: "y",
       orbEl: $("#storyOrb"),
       orbStops: HOME_ORB_STOPS,
       dotsParent: storyHome,
-      onSlideChange: applyGeoStops,
+      onSlideChange: applyHomeDecorFor,
     });
     pager.loadSlides($$(".story-slide", storyHome));
 
@@ -1640,6 +1702,71 @@
     storyHome._resetStory = () => pager.reset();
   }
 
+  // Phone: a real scrollable, scroll-snapped story instead of the JS-paced
+  // pager — wheel/swipe-driven discrete jumps don't map naturally onto touch
+  // scrolling, so below the breakpoint each slide is just a normal-flow,
+  // full-height, snap-aligned section and native scroll (with momentum,
+  // rubber-banding, all of it) does the rest. An IntersectionObserver tracks
+  // which slide is currently in view to drive the same orb/geo/background
+  // decorations, dot pagination, and per-slide content reveal as before.
+  function initStorySlidesMobile(storyHome) {
+    const scroller = $("#storySlidesScroll") || storyHome;
+    const slides = $$(".story-slide", scroller);
+    if (!slides.length) return;
+    let current = 0;
+
+    const dotsWrap = document.createElement("div");
+    dotsWrap.className = "story-dots";
+    dotsWrap.setAttribute("role", "tablist");
+    dotsWrap.setAttribute("aria-label", "Story slides");
+    slides.forEach((s, i) => {
+      const dot = document.createElement("button");
+      dot.type = "button";
+      dot.className = "story-dot";
+      dot.setAttribute("role", "tab");
+      dot.setAttribute("aria-label", `Slide ${i + 1}`);
+      dot.addEventListener("click", () => s.scrollIntoView({ behavior: "smooth", block: "start" }));
+      dotsWrap.appendChild(dot);
+    });
+    storyHome.appendChild(dotsWrap);
+    const dots = $$(".story-dot", dotsWrap);
+
+    function setActive(i) {
+      current = i;
+      slides.forEach((s, idx) => s.classList.toggle("is-active-slide", idx === i));
+      dots.forEach((d, idx) => d.classList.toggle("active", idx === i));
+      applyHomeDecorFor(i);
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.6) {
+          const idx = slides.indexOf(entry.target);
+          if (idx !== -1 && idx !== current) setActive(idx);
+        }
+      });
+    }, { root: scroller, threshold: [0.6] });
+    slides.forEach((s) => observer.observe(s));
+
+    $("#scrollCueBtn").addEventListener("click", () => slides[1]?.scrollIntoView({ behavior: "smooth", block: "start" }));
+
+    setActive(0);
+    storyHome._resetStory = () => {
+      scroller.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
+      setActive(0);
+    };
+  }
+
+  function initStorySlides() {
+    const storyHome = $("#storyHome");
+    // Exclusive, decided once at load: both attach gesture handlers to the
+    // same element, and createStoryPager's wheel/touch handling has no
+    // knowledge of the mobile layout, so running both at once would fight
+    // over the same swipe (native scroll-snap vs. a discrete pager jump).
+    if (isMobileHomeLayout()) initStorySlidesMobile(storyHome);
+    else initStorySlidesDesktop(storyHome);
+  }
+
   const EVENTS_ORB_STOPS = [
     { x: "18%", y: "24%", scale: 1.2 },
     { x: "84%", y: "70%", scale: 1.6 },
@@ -1650,11 +1777,16 @@
   // Timeline: wheel/swipe/keys/dot-click all just call goToEvent(), which
   // re-renders the detail panel and slides the timeline track — see
   // goToEvent(), positionTimeline(), renderEventsTimelineNodes() above.
+  // Below 767px the horizontal timeline is swapped out for the vertical list
+  // (see the CSS media query), which relies on plain native scrolling — so
+  // none of this pager's gesture handling should engage there.
+  function isMobileEventsLayout() { return window.matchMedia("(max-width: 767px)").matches; }
+
   function initEventsTimeline() {
     const storyEvents = $("#storyEvents");
 
     storyEvents.addEventListener("wheel", (e) => {
-      if (!eventsList.length) return;
+      if (!eventsList.length || isMobileEventsLayout()) return;
       e.preventDefault();
       const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
       if (eventsTransitioning || Math.abs(delta) < 8) return;
@@ -1663,11 +1795,11 @@
 
     let touchStart = null;
     storyEvents.addEventListener("touchstart", (e) => {
-      if (!eventsList.length) return;
+      if (!eventsList.length || isMobileEventsLayout()) return;
       touchStart = e.touches[0].clientX;
     }, { passive: true });
     storyEvents.addEventListener("touchend", (e) => {
-      if (touchStart === null) return;
+      if (touchStart === null || isMobileEventsLayout()) return;
       const d = touchStart - e.changedTouches[0].clientX;
       touchStart = null;
       if (Math.abs(d) < 40) return;
@@ -1675,7 +1807,7 @@
     }, { passive: true });
 
     window.addEventListener("keydown", (e) => {
-      if ($(".view.active")?.id !== "view-events") return;
+      if ($(".view.active")?.id !== "view-events" || isMobileEventsLayout()) return;
       if (e.key === "ArrowRight") { e.preventDefault(); goToEvent(eventsCurrent + 1); }
       else if (e.key === "ArrowLeft") { e.preventDefault(); goToEvent(eventsCurrent - 1); }
     });

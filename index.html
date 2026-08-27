@@ -89,6 +89,13 @@
           <span class="geo geo-dot" id="geo5"></span>
         </div>
 
+        <!-- Slides scroll independently of the orb/geo/background layers above,
+             which stay put as plain position:absolute children of .story-home
+             (unaffected by whichever slide the scroller is currently on) —
+             on phone this wrapper is the thing that actually scrolls/snaps;
+             on desktop it's inert and the JS pager positions slides directly. -->
+        <div class="story-slides-scroll" id="storySlidesScroll">
+
         <!-- Slide 1 — event name -->
         <section class="story-slide slide-title" data-slide="0">
           <div class="slide-content">
@@ -153,6 +160,7 @@
           </div>
         </section>
 
+        </div>
       </div>
     </section>
 
@@ -173,11 +181,18 @@
 
       <div class="story-events" id="storyEvents">
         <div class="story-orb" id="eventsOrb" aria-hidden="true"></div>
+
+        <!-- Desktop/tablet: horizontal timeline you page through, one event centered at a time -->
         <div class="events-detail" id="eventsDetail"></div>
         <div class="events-connector" id="eventsConnector" aria-hidden="true"></div>
         <div class="events-timeline-wrap">
           <div class="events-timeline-track" id="eventsTimeline"></div>
         </div>
+
+        <!-- Phone: a genuine vertical timeline list instead — swiping horizontally
+             through a wide line doesn't work well one-handed on a phone, a normal
+             scroll down a list of dated rows does -->
+        <div class="events-vertical-list" id="eventsVerticalList"></div>
         <div class="empty-state" id="eventsEmptyState" style="display:none;"></div>
       </div>
     </section>

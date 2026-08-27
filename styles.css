@@ -809,6 +809,26 @@ img { max-width: 100%; display: block; }
 .testimonial-name { font-weight: 800; }
 .testimonial-aff { color: var(--text-muted); font-size: 13px; }
 
+/* .story-slides-scroll wraps only the slides, one level inside .story-home —
+   the orb/geo shapes/wash/backgrounds stay direct children of .story-home
+   itself, so they're plain position:absolute against a box that never
+   scrolls, on phone or desktop. On desktop this wrapper does nothing (the JS
+   pager positions each .story-slide absolutely, same as before). On phone
+   it's the actual scroller: see initStorySlidesMobile() in app.js. */
+.story-slides-scroll { position: absolute; inset: 0; }
+@media (max-width: 767px) {
+  .story-slides-scroll { overflow-y: auto; scroll-snap-type: y mandatory; -webkit-overflow-scrolling: touch; }
+  .story-slide {
+    position: relative;
+    height: 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+}
+
 @media (max-width: 767px) {
   .story-events-grid { grid-template-columns: 1fr; }
 }
@@ -1000,6 +1020,27 @@ img { max-width: 100%; display: block; }
   transition: color .3s var(--ease-soft), font-weight .3s var(--ease-soft);
 }
 .timeline-node.active .timeline-date { color: var(--accent); font-weight: 700; }
+
+/* Phone: a dedicated vertical timeline list, not a shrunk copy of the
+   horizontal one — swiping sideways through a wide line doesn't work well
+   one-handed, so below this breakpoint the horizontal timeline/detail/orb
+   are swapped out entirely for a normal scrolling list of dated rows,
+   each with its own little stretch of connecting line on the left. */
+.events-vertical-list { display: none; }
+@media (max-width: 767px) {
+  .events-detail, .events-connector, .events-timeline-wrap, #eventsOrb { display: none; }
+  .story-events { display: block; overflow-y: auto; overflow-x: hidden; padding: 4px 20px 24px; }
+  .events-vertical-list { display: block; position: relative; z-index: 2; }
+
+  .ev-row { position: relative; display: flex; gap: 14px; }
+  .ev-row-rail { display: flex; flex-direction: column; align-items: center; width: 14px; flex-shrink: 0; padding-top: 22px; }
+  .ev-row-dot { width: 11px; height: 11px; border-radius: 50%; background: var(--accent); border: 2px solid var(--accent); flex-shrink: 0; }
+  .ev-row-line { width: 2px; flex: 1; min-height: 24px; background: var(--border-strong); margin-top: 4px; }
+  .ev-row:last-child .ev-row-line { display: none; }
+  .ev-row-body { flex: 1; min-width: 0; text-align: left; margin-bottom: 18px; }
+  .ev-row-body .event-date-badge { align-self: flex-start; }
+  .ev-row-body h3 { font-size: 16.5px; margin-top: 8px; }
+}
 
 .story-events .empty-state { position: absolute; inset: 0; align-items: center; justify-content: center; z-index: 2; }
 .event-card .topic-tags { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -1295,7 +1336,15 @@ img { max-width: 100%; display: block; }
     top: auto;
     transform: none;
     justify-content: space-between;
-    padding: 4px 4px calc(6px + env(safe-area-inset-bottom));
+    align-items: center;
+    /* Fixed to exactly --tabbar-h (used everywhere else — #view-home,
+       #view-events, .view padding — to reserve space for this bar) so
+       nothing can drift out of sync with it and leave a gap. Extra padding
+       for notched devices eats into this fixed height rather than growing
+       it, keeping that guarantee. */
+    height: var(--tabbar-h);
+    box-sizing: border-box;
+    padding: 4px 4px calc(4px + env(safe-area-inset-bottom));
     background: var(--bg-glass);
     backdrop-filter: var(--blur);
     -webkit-backdrop-filter: var(--blur);
@@ -1306,6 +1355,7 @@ img { max-width: 100%; display: block; }
   .tab-btn {
     flex: 1;
     flex-direction: column;
+    justify-content: center;
     gap: 3px;
     font-size: 10.5px;
     padding: 7px 2px 6px;
@@ -1314,8 +1364,12 @@ img { max-width: 100%; display: block; }
   }
   .tab-btn[aria-selected="true"] { color: var(--accent); }
   .tab-btn[aria-selected="true"] .tab-icon { color: var(--accent); }
-  body { padding-bottom: var(--tabbar-h); }
-  .view { padding: 20px 14px 32px; }
+  /* Room for the fixed bottom tab bar belongs on the normal-flow views'
+     own bottom padding, not on <body> — #view-home/#view-events already
+     size themselves exactly to fit above the tab bar (see their height
+     calc()s), so a body-level padding-bottom just added redundant extra
+     scrollable space below them. */
+  .view { padding: 20px 14px calc(32px + var(--tabbar-h)); }
 
   .two-col { grid-template-columns: 1fr; }
   .field-row { grid-template-columns: 1fr; }
