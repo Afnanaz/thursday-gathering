@@ -8,6 +8,19 @@
 (() => {
   "use strict";
 
+  // 100dvh isn't reliably supported in every in-app browser (e.g. WhatsApp's
+  // built-in webview), which can leave a gap at the bottom of the full-screen
+  // Home/Events layouts instead of tracking the real visible height. Measuring
+  // window.innerHeight directly in JS works everywhere, so --vh100 is the
+  // source of truth those layouts size against (with 100dvh only as a CSS
+  // fallback for the instant before this runs).
+  function setViewportHeightVar() {
+    document.documentElement.style.setProperty("--vh100", `${window.innerHeight}px`);
+  }
+  setViewportHeightVar();
+  window.addEventListener("resize", setViewportHeightVar);
+  window.addEventListener("orientationchange", setViewportHeightVar);
+
   const STORAGE_KEY = "thursdayGathering.v1";
 
   /* ---------------- date helpers ---------------- */
