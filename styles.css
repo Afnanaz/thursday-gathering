@@ -173,7 +173,7 @@ img { max-width: 100%; display: block; }
 /* ---------- App shell ---------- */
 
 .app {
-  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
 }
@@ -459,11 +459,11 @@ img { max-width: 100%; display: block; }
 
 .story-home {
   position: relative;
-  height: calc(100svh - var(--header-h));
+  height: calc(100dvh - var(--header-h));
   overflow: hidden;
 }
 @media (max-width: 767px) {
-  .story-home { height: calc(100svh - var(--header-h) - var(--tabbar-h)); }
+  .story-home { height: calc(100dvh - var(--header-h) - var(--tabbar-h)); }
 }
 
 /* A single glowing shape that drifts, resizes and carries through every
@@ -890,9 +890,9 @@ img { max-width: 100%; display: block; }
 /* ---------- Events: one-page-at-a-time horizontal story (same concept as Home) ---------- */
 
 #view-events { padding: 0; overflow: hidden; }
-#view-events.active { display: flex; flex-direction: column; height: calc(100svh - var(--header-h)); }
+#view-events.active { display: flex; flex-direction: column; height: calc(100dvh - var(--header-h)); }
 @media (max-width: 767px) {
-  #view-events.active { height: calc(100svh - var(--header-h) - var(--tabbar-h)); }
+  #view-events.active { height: calc(100dvh - var(--header-h) - var(--tabbar-h)); }
 }
 .events-head { flex-shrink: 0; padding: 28px 20px 20px; }
 
