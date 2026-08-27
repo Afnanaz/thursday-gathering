@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Thursday Gathering</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cdefs%3E%3ClinearGradient%20id%3D%27g%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%2732%27%20y2%3D%2732%27%20gradientUnits%3D%27userSpaceOnUse%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%23ea5a1b%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27%23ff9a4d%27/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%2732%27%20height%3D%2732%27%20rx%3D%278%27%20fill%3D%27url%28%23g%29%27/%3E%3Crect%20x%3D%273%27%20y%3D%276%27%20width%3D%2713%27%20height%3D%273.2%27%20rx%3D%271.6%27%20fill%3D%27%23fff%27/%3E%3Crect%20x%3D%277.9%27%20y%3D%276%27%20width%3D%273.2%27%20height%3D%2720%27%20rx%3D%271.6%27%20fill%3D%27%23fff%27/%3E%3Ccircle%20cx%3D%2722%27%20cy%3D%2716%27%20r%3D%277.2%27%20fill%3D%27none%27%20stroke%3D%27%23fff%27%20stroke-width%3D%273.2%27%20stroke-linecap%3D%27round%27%20stroke-dasharray%3D%2734%2012%27/%3E%3Cline%20x1%3D%2725.6%27%20y1%3D%2716%27%20x2%3D%2720.5%27%20y2%3D%2716%27%20stroke%3D%27%23fff%27%20stroke-width%3D%273.2%27%20stroke-linecap%3D%27round%27/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=Karla:wght@400;500;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+
+  <!-- ===== Header (nav docked center, transparent) ===== -->
+  <header class="app-header">
+    <button type="button" class="brand notranslate" id="brandHomeBtn" aria-label="Go to home" translate="no">
+      <div class="brand-mark">
+        <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <rect x="3" y="6" width="13" height="3.2" rx="1.6" fill="currentColor"/>
+          <rect x="7.9" y="6" width="3.2" height="20" rx="1.6" fill="currentColor"/>
+          <circle cx="22" cy="16" r="7.2" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="34 12"/>
+          <line x1="25.6" y1="16" x2="20.5" y2="16" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="brand-name">Thursday Gathering</div>
+    </button>
+
+    <nav class="tabnav" id="tabnav" role="tablist" aria-label="Primary">
+      <button class="tab-btn" data-tab="home" role="tab" aria-selected="true">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
+        <span data-i18n="nav.home">Home</span>
+      </button>
+      <button class="tab-btn" data-tab="events" role="tab" aria-selected="false">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg>
+        <span data-i18n="nav.events">Events</span>
+      </button>
+      <button class="tab-btn" data-tab="attendees" role="tab" aria-selected="false">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17.5" cy="8.5" r="2.4"/><path d="M16 14.3c2.9.4 5 2.3 5 5.2"/></svg>
+        <span data-i18n="nav.attendees">Attendees</span>
+      </button>
+      <button class="tab-btn" data-tab="messages" role="tab" aria-selected="false">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v11H8l-4 4V5z"/></svg>
+        <span data-i18n="nav.messages">Messages</span>
+      </button>
+      <button class="tab-btn" data-tab="community" role="tab" aria-selected="false">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M2.5 20c0-3.2 2.5-5.4 5.5-5.4s5.5 2.2 5.5 5.4M10.5 20c0-3.2 2.5-5.4 5.5-5.4s5.5 2.2 5.5 5.4"/></svg>
+        <span data-i18n="nav.community">Community</span>
+      </button>
+    </nav>
+
+    <div class="header-actions">
+      <div class="lang-switch" id="langSwitch" role="group" aria-label="Page language">
+        <button type="button" class="lang-switch-btn active" data-lang="en">EN</button>
+        <button type="button" class="lang-switch-btn" data-lang="ja">JA</button>
+      </div>
+      <button class="icon-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="5"/><path d="M12 1v3M12 20v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M1 12h3M20 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>
+      </button>
+      <button class="avatar-btn" id="openProfileBtn" aria-label="Open my profile" title="My profile">
+        <div class="avatar" id="headerAvatar" style="width:100%;height:100%;font-size:13px;"></div>
+      </button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ===== HOME: one-page scroll-snap story ===== -->
+    <section class="view active" id="view-home">
+      <div class="story-home" id="storyHome">
+
+        <!-- Backgrounds live as their own global layer (behind the orb/geo layer,
+             which sits behind slide content) — each slide's .story-slide only
+             ever holds content, so it never re-traps the shared decorations
+             below it inside its own stacking context. -->
+        <div class="slide-bg-global bg-split" data-bg-for="0" aria-hidden="true"></div>
+        <div class="slide-bg-global bg-zoom" data-bg-for="1" aria-hidden="true"></div>
+        <div class="slide-bg-global bg-pan" data-bg-for="2" aria-hidden="true"></div>
+        <div class="slide-bg-global bg-split bg-split-reverse" data-bg-for="5" aria-hidden="true"></div>
+
+        <div class="story-orb" id="storyOrb" aria-hidden="true"></div>
+        <div class="geo-wash" id="geoWash" aria-hidden="true"></div>
+        <div class="geo-deco" aria-hidden="true">
+          <span class="geo geo-ring" id="geo1"></span>
+          <span class="geo geo-dot" id="geo2"></span>
+          <span class="geo geo-bar" id="geo3"></span>
+          <span class="geo geo-ring-lg" id="geo4"></span>
+          <span class="geo geo-dot" id="geo5"></span>
+        </div>
+
+        <!-- Slide 1 — event name -->
+        <section class="story-slide slide-title" data-slide="0">
+          <div class="slide-content">
+            <span class="slide-eyebrow" data-i18n="home.eyebrow">Weekly · Every Thursday</span>
+            <h1 class="story-title notranslate" translate="no">Thursday Gathering</h1>
+          </div>
+          <button type="button" class="scroll-cue" id="scrollCueBtn" aria-label="Scroll down">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+        </section>
+
+        <!-- Slide 2 — zoom + slogan -->
+        <section class="story-slide slide-slogan" data-slide="1">
+          <div class="slide-content">
+            <p class="story-slogan" data-i18n="home.slogan">Connecting people through innovation</p>
+          </div>
+        </section>
+
+        <!-- Slide 3 — pan background, event detail -->
+        <section class="story-slide slide-details" data-slide="2">
+          <div class="slide-content">
+            <span class="slide-eyebrow" data-i18n="home.detailsEyebrow">What to expect</span>
+            <h2 class="story-h2" data-i18n="home.detailsTitle">A weekly evening, done the same easy way every time</h2>
+            <p class="story-body" id="homeDescription"></p>
+            <div class="details-meta">
+              <span class="details-meta-item" id="nextDate">—</span>
+              <span class="details-meta-item mono" id="nextTime">—</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Slide 4 — logo reveal -->
+        <section class="story-slide slide-logo" data-slide="3">
+          <div class="logo-reveal notranslate" translate="no">
+            <div class="logo-mark">
+              <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+                <rect class="tg-t" x="3" y="6" width="13" height="3.2" rx="1.6"/>
+                <rect class="tg-t" x="7.9" y="6" width="3.2" height="20" rx="1.6"/>
+                <circle class="tg-g" cx="22" cy="16" r="7.2" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="34 12"/>
+                <line class="tg-g" x1="25.6" y1="16" x2="20.5" y2="16" stroke-width="3.2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="logo-word">Thursday Gathering</div>
+          </div>
+        </section>
+
+        <!-- Slide 5 — upcoming events -->
+        <section class="story-slide slide-events" data-slide="4">
+          <div class="slide-content slide-content-wide">
+            <span class="slide-eyebrow" data-i18n="home.upcomingEyebrow">Coming up</span>
+            <h2 class="story-h2" data-i18n="home.upcomingTitle">Three gatherings ahead</h2>
+            <div class="story-events-grid" id="storyEventsGrid"></div>
+            <button class="btn btn-outline" data-goto="events" data-i18n="home.seeLineup">See the lineup</button>
+          </div>
+        </section>
+
+        <!-- Slide 6 — testimonial -->
+        <section class="story-slide slide-testimonial" data-slide="5">
+          <div class="slide-content">
+            <span class="slide-eyebrow" data-i18n="home.testimonialEyebrow">In their words</span>
+            <div class="testimonial-card" id="testimonialCard"></div>
+          </div>
+        </section>
+
+      </div>
+    </section>
+
+    <!-- ===== EVENTS: one-page-at-a-time horizontal story, same concept as Home ===== -->
+    <section class="view" id="view-events">
+      <div class="events-head container">
+        <div class="view-head">
+          <div>
+            <h1 data-i18n="events.title">Events</h1>
+            <div class="sub" data-i18n="events.sub">Browse upcoming sessions or check what you're already registered for.</div>
+          </div>
+        </div>
+        <div class="chiprow" id="eventsSubnav">
+          <button class="chip active" data-events-tab="discover" data-i18n="events.discover">Discover</button>
+          <button class="chip" data-events-tab="mine" data-i18n="events.mine">My events</button>
+        </div>
+      </div>
+
+      <div class="story-events" id="storyEvents">
+        <div class="story-orb" id="eventsOrb" aria-hidden="true"></div>
+        <div class="events-detail" id="eventsDetail"></div>
+        <div class="events-connector" id="eventsConnector" aria-hidden="true"></div>
+        <div class="events-timeline-wrap">
+          <div class="events-timeline-track" id="eventsTimeline"></div>
+        </div>
+        <div class="empty-state" id="eventsEmptyState" style="display:none;"></div>
+      </div>
+    </section>
+
+    <!-- ===== ATTENDEES ===== -->
+    <section class="view" id="view-attendees">
+      <div class="container">
+        <div class="view-head">
+          <div>
+            <h1 data-i18n="attendees.title">Attendees</h1>
+            <div class="sub" data-i18n="attendees.sub">See who's coming, who you might want to meet, and who you've bookmarked.</div>
+          </div>
+        </div>
+        <div class="chiprow" id="attendeesSubnav">
+          <button class="chip active" data-attendees-tab="all" data-i18n="common.all">All</button>
+          <button class="chip" data-attendees-tab="recommended" data-i18n="attendees.recommended">Recommended</button>
+          <button class="chip" data-attendees-tab="bookmarked" data-i18n="attendees.bookmarked">Bookmarked</button>
+          <button class="chip" data-attendees-tab="category" data-i18n="common.category">Category</button>
+        </div>
+        <div class="chiprow" id="categoryFilterRow" style="display:none;"></div>
+        <div class="grid" id="attendeesGrid"></div>
+      </div>
+    </section>
+
+    <!-- ===== MESSAGES ===== -->
+    <section class="view" id="view-messages">
+      <div class="container">
+        <div class="view-head">
+          <div>
+            <h1 data-i18n="messages.title">Messages</h1>
+            <div class="sub" data-i18n="messages.sub">Direct conversations with attendees and speakers.</div>
+          </div>
+        </div>
+        <div class="messages-shell" id="messagesShell">
+          <div class="conv-list" id="convList"></div>
+          <div class="thread" id="threadPane">
+            <div class="thread-empty" data-i18n="messages.selectConv">Select a conversation to start messaging.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== COMMUNITY ===== -->
+    <section class="view" id="view-community">
+      <div class="container">
+        <div class="view-head">
+          <div>
+            <h1 data-i18n="community.title">Community</h1>
+            <div class="sub" data-i18n="community.sub">Topic and social groups — the hallway conversation that keeps going after Thursday.</div>
+          </div>
+          <button class="btn btn-primary" id="newGroupBtn" data-i18n="community.newGroup">+ New group</button>
+        </div>
+        <div class="chiprow" id="communitySubnav">
+          <button class="chip active" data-community-tab="all" data-i18n="common.all">All</button>
+          <button class="chip" data-community-tab="following" data-i18n="community.following">Following</button>
+        </div>
+        <div id="newGroupFormWrap" style="display:none;" class="card">
+          <div class="panel-title"><h2 data-i18n="community.startGroup">Start a group</h2></div>
+          <div class="new-group-form">
+            <div class="field-row">
+              <div class="field"><label data-i18n="community.groupName">Group name</label><input type="text" id="ngName" placeholder="e.g. Climate Tech Founders" data-i18n-placeholder="community.groupNamePh"></div>
+              <div class="field"><label data-i18n="common.category">Category</label><input type="text" id="ngCategory" placeholder="e.g. Topic, Social" data-i18n-placeholder="community.categoryPh"></div>
+            </div>
+            <div class="field"><label data-i18n="community.whatsAbout">What's it about</label><textarea id="ngDesc" placeholder="Short description for people deciding whether to join" data-i18n-placeholder="community.whatsAboutPh"></textarea></div>
+            <div class="row" style="display:flex;gap:10px;">
+              <button class="btn btn-primary" id="ngCreate" data-i18n="community.create">Create group</button>
+              <button class="btn btn-ghost" id="ngCancel" data-i18n="community.cancel">Cancel</button>
+            </div>
+          </div>
+        </div>
+        <div class="grid" id="communityGrid"></div>
+      </div>
+    </section>
+
+    <!-- ===== ATTENDEE DETAIL (full page) ===== -->
+    <section class="view" id="view-attendee-detail">
+      <div class="container">
+        <div class="view-head">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <button class="icon-btn" id="attendeeDetailBackBtn" aria-label="Back">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <h1 id="attendeeDetailTitle">Attendee</h1>
+          </div>
+        </div>
+        <div class="card profile-view" id="attendeeDetailBody" style="max-width:640px;"></div>
+      </div>
+    </section>
+
+    <!-- ===== EVENT DETAIL (full page) ===== -->
+    <section class="view" id="view-event-detail">
+      <div class="container">
+        <div class="view-head">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <button class="icon-btn" id="eventDetailBackBtn" aria-label="Back">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <div>
+              <h1 id="eventDetailTitle">Event</h1>
+              <div class="sub" id="eventDetailDate"></div>
+            </div>
+          </div>
+        </div>
+        <div class="event-detail-body" id="eventDetailBody"></div>
+      </div>
+    </section>
+
+    <!-- ===== PROFILE (full page) ===== -->
+    <section class="view" id="view-profile">
+      <div class="container">
+        <div class="view-head">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <button class="icon-btn" id="profileBackBtn" aria-label="Back">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <div>
+              <h1 data-i18n="profile.title">My profile</h1>
+              <div class="sub" data-i18n="profile.sub">Keep this up to date so people can find and message you.</div>
+            </div>
+          </div>
+        </div>
+        <!-- ---- VIEW (finished profile) ---- -->
+        <div class="card profile-view" id="profileViewCard" style="max-width:640px;">
+          <div class="profile-view-head">
+            <div class="profile-view-avatar" id="profileViewAvatar"></div>
+            <div class="profile-view-heading">
+              <div class="attendee-name" id="pvName" style="font-size:20px;"></div>
+              <div class="attendee-aff" id="pvAffiliation"></div>
+              <span class="tag" id="pvCategory" style="margin-top:8px;display:inline-block;"></span>
+            </div>
+            <button class="btn btn-outline btn-sm" id="profileEditBtn" data-i18n="profile.edit" style="flex-shrink:0;">Edit profile</button>
+          </div>
+          <div id="pvEmailRow"></div>
+          <p class="desc" id="pvBackground"></p>
+          <div id="pvInterestsWrap">
+            <div class="section-title" data-i18n="profile.interests" style="margin-bottom:8px;">Interests</div>
+            <div class="topic-tags" id="pvInterests"></div>
+          </div>
+          <div id="pvTopicsWrap">
+            <div class="section-title" data-i18n="profile.businessTopics" style="margin-bottom:8px;">Business topics</div>
+            <div class="topic-tags" id="pvTopics"></div>
+          </div>
+          <div id="pvLinksRow" style="display:flex;gap:10px;flex-wrap:wrap;"></div>
+          <div id="pvLanguagesWrap">
+            <div class="section-title" data-i18n="profile.languagesSpoken" style="margin-bottom:8px;">Languages spoken</div>
+            <div id="pvLanguages" style="display:flex;flex-direction:column;gap:8px;"></div>
+          </div>
+        </div>
+
+        <!-- ---- EDIT (form) ---- -->
+        <div class="card" id="profileEditCard" style="display:none;flex-direction:column;gap:22px;max-width:640px;">
+          <div class="field">
+            <label data-i18n="profile.photo">Profile photo</label>
+            <div style="display:flex;align-items:center;gap:16px;">
+              <div id="pfPhotoPreview" style="width:72px;height:72px;border-radius:50%;overflow:hidden;flex-shrink:0;"></div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <div style="display:flex;gap:8px;">
+                  <button type="button" class="btn btn-outline btn-sm" id="pfUploadPhotoBtn" data-i18n="profile.uploadPhoto">Upload photo</button>
+                  <button type="button" class="btn btn-ghost btn-sm" id="pfRemovePhotoBtn" style="display:none;" data-i18n="profile.removePhoto">Remove photo</button>
+                </div>
+                <input type="file" id="pfPhotoInput" accept="image/*" style="display:none;">
+                <span class="hint" data-i18n="profile.photoHint">JPG or PNG — it'll be resized automatically.</span>
+              </div>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label data-i18n="profile.name">Name</label><input type="text" id="pfName"></div>
+            <div class="field"><label data-i18n="profile.affiliation">Affiliation</label><input type="text" id="pfAffiliation"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label data-i18n="profile.email">Email</label><input type="email" id="pfEmail"></div>
+            <div class="field">
+              <label data-i18n="common.category">Category</label>
+              <select id="pfCategory" style="border:1px solid var(--border);border-radius:6px;padding:10px 12px;background:var(--surface);color:var(--text);font-family:inherit;font-size:14.5px;">
+                <option value="Student" data-i18n="category.Student">Student</option>
+                <option value="Investor" data-i18n="category.Investor">Investor</option>
+                <option value="Founder" data-i18n="category.Founder">Founder</option>
+                <option value="Mentor" data-i18n="category.Mentor">Mentor</option>
+                <option value="Speaker" data-i18n="category.Speaker">Speaker</option>
+                <option value="Professional" data-i18n="category.Professional">Professional</option>
+              </select>
+            </div>
+          </div>
+          <div class="field"><label data-i18n="profile.background">Background</label><textarea id="pfBackground" placeholder="A couple of sentences about your background" data-i18n-placeholder="profile.backgroundPh"></textarea></div>
+          <div class="field">
+            <label data-i18n="profile.interests">Interests</label>
+            <div class="tag-input" id="pfInterestsInput"><input type="text" placeholder="Type an interest and press Enter" data-i18n-placeholder="profile.interestsPh"></div>
+          </div>
+          <div class="field">
+            <label data-i18n="profile.businessTopics">Business topics</label>
+            <div class="tag-input" id="pfTopicsInput"><input type="text" placeholder="Type a topic and press Enter" data-i18n-placeholder="profile.businessTopicsPh"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label data-i18n="profile.linkedin">LinkedIn</label><input type="url" id="pfLinkedin" placeholder="https://linkedin.com/in/…"></div>
+            <div class="field"><label data-i18n="profile.website">Company website</label><input type="url" id="pfWebsite" placeholder="https://…"></div>
+          </div>
+          <div class="field">
+            <label data-i18n="profile.languagesSpoken">Languages spoken</label>
+            <div id="pfLanguages" style="display:flex;flex-direction:column;gap:10px;"></div>
+            <button class="btn btn-outline btn-sm" id="pfAddLang" style="align-self:flex-start;margin-top:2px;" data-i18n="profile.addLanguage">+ Add language</button>
+            <span class="hint" data-i18n="profile.languageHint">Click the dots to set proficiency, 1 (basic) to 5 (fluent).</span>
+          </div>
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-primary" style="flex:1" id="pfSave" data-i18n="profile.save">Save profile</button>
+            <button class="btn btn-ghost" id="pfCancel" data-i18n="community.cancel">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ===== Group detail modal ===== -->
+<div class="modal-backdrop" id="groupModalBackdrop">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="groupModalTitle">
+    <div class="modal-head">
+      <h2 id="groupModalTitle">Group</h2>
+      <button class="modal-close" data-close-modal="groupModalBackdrop" aria-label="Close">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" id="groupModalBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Google Translate widget, driven headlessly by the EN/JA switch in app.js as a
+     safety net over the app's own curated translations (see translateWholePage in
+     app.js) — its native UI is hidden via CSS (see "Google Translate widget" in
+     styles.css). Only loads/runs if translate.google.com is reachable. -->
+<div id="google_translate_element" style="display:none;"></div>
+<script>
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      { pageLanguage: "en", includedLanguages: "ja", autoDisplay: false },
+      "google_translate_element"
+    );
+  }
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<script src="app.js"></script>
+</body>
+</html>
